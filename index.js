@@ -10,9 +10,9 @@ app.use(express.json()); // позволяет читать json из запро
 app.use(cors()); // Разрешает бэкенду получать запросы откуда угодно
 
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // Разрешить доступ только с этого источника
-  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE"); // Разрешенные методы запросов
-  res.header("Access-Control-Allow-Headers", "Content-Type"); // Разрешенные заголовки
+  res.header("Access-Control-Allow-Origin", "*"); // Разрешить доступ только с этого источника
+  res.header("Access-Control-Allow-Methods", "*"); // Разрешенные методы запросов
+  res.header("Access-Control-Allow-Headers", "*"); // (или Content-Type) Разрешенные заголовки
   next();
 });
 
