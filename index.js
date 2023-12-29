@@ -2,11 +2,19 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-dotenv.config();
 
+dotenv.config();
+const URI = process.env.MONGODB_CONNECT_URI;
 const app = express();
 app.use(express.json()); // позволяет читать json из запроса
-const URI = process.env.MONGODB_CONNECT_URI;
+app.use(cors()); // Разрешает бэкенду получать запросы откуда угодно
+
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // Разрешить доступ только с этого источника
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE"); // Разрешенные методы запросов
+  res.header("Access-Control-Allow-Headers", "Content-Type"); // Разрешенные заголовки
+  next();
+});
 
 mongoose
   .connect(URI)
@@ -24,7 +32,6 @@ app.get("/", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-  // res.send("Hey cutiee");
 });
 
 app.post("/register", async (req, res) => {
