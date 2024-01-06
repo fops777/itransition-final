@@ -2,16 +2,24 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import { registerValidation } from "./validations/auth.js";
+import checkAuth from "./utils/checkAuth.js";
+import {
+  register,
+  login,
+  getMe,
+  getAll,
+} from "./controllers/UserController.js";
 
 dotenv.config();
 const URI = process.env.MONGODB_CONNECT_URI;
 const app = express();
 app.use(express.json()); // позволяет читать json из запроса
-app.use(cors()); // Разрешает бэкенду получать запросы откуда угодно
+app.use(cors());
 
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*"); // Разрешить доступ только с этого источника
-  res.header("Access-Control-Allow-Methods", "*"); // Разрешенные методы запросов
+  res.header("Access-Control-Allow-Origin", "*"); // Разрешить доступ со всех испочников
+  res.header("Access-Control-Allow-Methods", "*"); // Разрешенные методы запросов (все)
   res.header("Access-Control-Allow-Headers", "*"); // (или Content-Type) Разрешенные заголовки
   next();
 });
@@ -21,30 +29,12 @@ mongoose
   .then(() => console.log("DB - OK"))
   .catch((err) => console.log(err));
 
-const TestModel = mongoose.model("Test", {
-  title: String,
-});
+app.post("/auth/login", login);
+app.post("/auth/register", registerValidation, register);
+app.get("/auth/me", checkAuth, getMe);
 
-app.get("/", async (req, res) => {
-  try {
-    const items = await TestModel.find(); // Используем метод find() для получения всех записей
-    res.json(items);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-app.post("/register", async (req, res) => {
-  console.log(req.body.title);
-
-  const doc = new TestModel({
-    title: req.body.title,
-  });
-
-  const data = await doc.save();
-
-  res.json(data);
-});
+// My custom
+app.get("/", getAll);
 
 app.listen("8080", (err) => {
   if (err) {
