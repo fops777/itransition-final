@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import UserModel from "./models/User.js";
 import { registerValidation } from "./validations/auth.js";
 import checkAuth from "./utils/checkAuth.js";
 import {
@@ -29,12 +30,23 @@ mongoose
   .then(() => console.log("DB - OK"))
   .catch((err) => console.log(err));
 
-app.post("/auth/login", login);
-app.post("/auth/register", registerValidation, register);
-app.get("/auth/me", checkAuth, getMe);
+// app.post("/auth/login", login);
+// app.post("/auth/register", registerValidation, register);
+// app.get("/auth/me", checkAuth, getMe);
 
 // My custom
-app.get("/", getAll);
+// app.get("/", getAll);
+app.get("/", async (req, res) => {
+  try {
+    const users = await UserModel.find();
+    res.json(users);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Не удалось получить юзеров",
+    });
+  }
+});
 
 app.listen("8080", (err) => {
   if (err) {
