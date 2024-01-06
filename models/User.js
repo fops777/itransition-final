@@ -12,10 +12,14 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    passwordHash: {
+    password: {
       type: String,
       required: true,
     },
+    // passwordHash: {
+    //   type: String,
+    //   required: true,
+    // },
     avaUrl: String,
   },
   {
