@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+// import bcrypt from "bcrypt";
 import { validationResult } from "express-validator";
 import UserModel from "../models/User.js";
 
@@ -14,15 +14,16 @@ export const register = async (req, res) => {
     // С клиента на сервак пароль можно передавать в открытом виде,
     // фронт не должен шифровать пароль
     // Пароль должен шифровать бэкенд
-    const password = req.body.password;
-    let salt = await bcrypt.genSalt(10); // алгоритм шифрования
-    const passwordHash = await bcrypt.hash(password, salt);
+    // const password = req.body.password;
+    // let salt = await bcrypt.genSalt(10); // алгоритм шифрования
+    // const passwordHash = await bcrypt.hash(password, salt);
 
     const doc = new UserModel({
       email: req.body.email,
       fullName: req.body.fullName,
       avatarUrl: req.body.avatarUrl,
-      passwordHash,
+      // passwordHash,
+      password: req.body.password, // custom
     });
 
     const user = await doc.save();
@@ -58,10 +59,12 @@ export const login = async (req, res) => {
     }
 
     // Проверка совпадают ли пароли из req.body.password и пароль найденного юзера
-    const isValidPassword = await bcrypt.compare(
-      req.body.password,
-      user._doc.passwordHash
-    );
+    // const isValidPassword = await bcrypt.compare(
+    //   req.body.password,
+    //   user._doc.passwordHash
+    // );
+
+    const isValidPassword = req.body.password === user._doc.password; // custom
 
     if (!isValidPassword) {
       return res.status(400).json({
