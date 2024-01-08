@@ -1,16 +1,9 @@
 import jwt from "jsonwebtoken";
 // import bcrypt from "bcrypt";
-import { validationResult } from "express-validator";
 import UserModel from "../models/User.js";
 
 export const register = async (req, res) => {
   try {
-    // в errors будут храниться все ошибки которые не прошли registerValidation
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json(errors.array());
-    }
-
     // С клиента на сервак пароль можно передавать в открытом виде,
     // фронт не должен шифровать пароль
     // Пароль должен шифровать бэкенд
@@ -24,6 +17,7 @@ export const register = async (req, res) => {
       avatarUrl: req.body.avatarUrl,
       // passwordHash,
       password: req.body.password, // custom
+      isAdmin: req.body.isAdmin,
     });
 
     const user = await doc.save();
