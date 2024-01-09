@@ -10,19 +10,6 @@ import {
   collectionCreateValidation,
 } from "./validations/validations.js";
 import { CollectionController, UserController } from "./controllers/index.js";
-// import {
-//   register,
-//   login,
-//   getMe,
-//   getAll,
-// } from "./controllers/UserController.js";
-// import {
-//   create,
-//   getAllCollections,
-//   getOneCollection,
-//   deleteCollection,
-//   updateCollection,
-// } from "./controllers/CollectionController.js";
 
 // Configurations
 dotenv.config();
